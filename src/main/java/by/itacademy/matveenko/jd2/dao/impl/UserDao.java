@@ -60,4 +60,32 @@ public class UserDao implements IUserDao{
         }
         return true;
     }
+    
+    @Override
+    public User findById(Integer id) throws SQLException, DaoException {
+    	String selectDataFindById = "SELECT users.id as id, name, surname, login, password, email, roles.role_name as role" +
+                "from users join roles on roles.id = users.role\n" + "where users.id=?";
+        try (Connection connection = ConnectionPool.getInstance().takeConnection();
+             PreparedStatement ps = connection.prepareStatement(selectDataFindById)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new User.Builder()
+                            .withId(rs.getInt("id"))
+                            .withName(rs.getString("name"))
+                            .withSurname(rs.getString("surname"))
+                            .withLogin(rs.getString("login"))
+                            .withPassword(rs.getString("password"))
+                            .withEmail(rs.getString("email"))
+                            .withRole(UserRole.valueOf(rs.getString("role")))
+                            .build();
+                }
+            } catch (SQLException e) {
+            	throw new DaoException(e);
+            }
+        } catch (ConnectionPoolException e) {
+            throw new DaoException();
+        }
+        return null;
+    }    
 }

@@ -10,5 +10,5 @@ public class NewsParameterName {
 	public static final String JSP_BRIEF_NEWS = "brief";
 	public static final String JSP_CONTENT_NEWS = "content";	
 	public static final String JSP_DATE_NEWS = "date";
-	public static final String JSP_DATE_ID_REPORTER = "idReporter";
+	public static final String JSP_DATE_ID_REPORTER = "reporter";
 }

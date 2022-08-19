@@ -1,28 +1,71 @@
 package by.itacademy.matveenko.jd2.bean;
 
 import com.google.common.base.Objects;
-
 import by.itacademy.matveenko.jd2.bean.User;
 
-public class User {	
+
+public class User {
+	private Integer id;
+	private String login;
+    private String password;
 	private String userName;
     private String userSurname;
-    private String email;
-    private String login;
-    private String password;
+    private String email;    
     private UserRole role;
 
     public User() {
     }
+     
+    public static class Builder {
+        private User newUser;
 
-    //TODO builder      
-    public User(String login, String password, String userName, String userSurname, String email, UserRole role) {    	
-    	this.login = login;
-        this.password = password;
-    	this.userName = userName;
-        this.userSurname = userSurname;
-        this.email = email;        
-        this.role = role;
+        public Builder() {
+            this.newUser = new User();
+        }
+        
+        public Builder withId(Integer id){
+            newUser.setId(id);
+            return this;
+        }
+
+        public Builder withLogin(String login){
+            newUser.setLogin(login);
+            return this;
+        }
+        public Builder withPassword(String password){
+            newUser.setPassword(password);
+            return this;
+        }
+        public Builder withName(String name){
+            newUser.setUserName(name);
+            return this;
+        }
+        public Builder withSurname(String surname){
+            newUser.setUserSurname(surname);
+            return this;
+        }
+
+        public Builder withEmail(String email){
+            newUser.setEmail(email);
+            return this;
+        }
+
+        public Builder withRole(UserRole role){
+            newUser.setRole(role);
+            return this;
+        }
+
+        public User build(){
+            return newUser;
+        }
+    }
+    
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return this.id;
     }
 
     public String getUserName() {
@@ -78,23 +121,31 @@ public class User {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         User that = (User) obj;
-        return Objects.equal(userName, that.userName) && Objects.equal(userSurname, that.userSurname) && Objects.equal(email, that.email)
+        return Objects.equal(id, that.id) && Objects.equal(userName, that.userName) && Objects.equal(userSurname, that.userSurname) && Objects.equal(email, that.email)
         	   && Objects.equal(login, that.login) && Objects.equal(password, that.password) && Objects.equal(role, that.role);
     }
     
     @Override
 	public int hashCode() {
-		return Objects.hashCode(userName, userSurname, email, login, password, role);
+    	int result = (int) (id ^ (id >>> 32));
+    	result = 31 * result + (login != null ? login.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (userName != null ? userName.hashCode() : 0);
+        result = 31 * result + (userSurname != null ? userSurname.hashCode() : 0);		
+		result = 31 * result + (email == null ? 0 : email.hashCode());
+		result = 31 * result + (role == null ? 0 : role.hashCode());
+		return result;
 	}
 
 	@Override
     public String toString() {
-        return "NewUserInfo{" +
-                "userName='" + userName + '\'' +
-                ", userSurname='" + userSurname + '\'' +
-                ", email='" + email + '\'' +
-                ", login='" + login + '\'' +
+        return "User{" +
+        		"id='" + id + '\'' +
+        		", login='" + login + '\'' +
                 ", password=" + password +
+                ", userName='" + userName + '\'' +
+                ", userSurname='" + userSurname + '\'' +
+                ", email='" + email + '\'' +                
                 ", role='" + role + '\'' +
                 '}';
     }  

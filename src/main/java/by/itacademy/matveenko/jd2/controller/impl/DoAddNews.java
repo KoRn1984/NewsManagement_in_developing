@@ -1,6 +1,7 @@
 package by.itacademy.matveenko.jd2.controller.impl;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +34,13 @@ public class DoAddNews implements Command{
 			String date = request.getParameter(NewsParameterName.JSP_DATE_NEWS);
 
 			HttpSession getSession = request.getSession(true);
-			News news = new News(Integer.parseInt(id), title, brief, content, date);
+			News news = new News.Builder()
+					.withId(Integer.parseInt(id))
+                    .withTitle(title)
+                    .withBrief(brief)
+                    .withContent(content)
+                    .withDate(LocalDate.parse(date))                    
+                    .build();
 			try {
 				//System.out.println("newsService.save(news) " + newsService.save(news));
 				if (newsService.save(news)) {				

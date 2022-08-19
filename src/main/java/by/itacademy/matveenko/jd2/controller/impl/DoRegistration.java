@@ -35,7 +35,14 @@ public class DoRegistration implements Command {
 		    UserRole role = UserRole.USER;
 		    
 		    HttpSession getSession = request.getSession(true);
-			User user = new User (login, password, userName, userSurname, email,  role);
+			User user = new User.Builder()
+					.withLogin(login)
+                    .withPassword(password)                    
+                    .withName(userName)
+                    .withSurname(userSurname)                    
+                    .withEmail(email)
+                    .withRole(role)
+                    .build();
 		    try {		   
 				if (service.registration(user)) {
 					getSession.setAttribute(AttributsName.USER, ConnectorStatus.ACTIVE);

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,13 +18,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import by.itacademy.matveenko.jd2.bean.News;
+import by.itacademy.matveenko.jd2.dao.DaoException;
 import by.itacademy.matveenko.jd2.dao.INewsDao;
 import by.itacademy.matveenko.jd2.dao.NewsDaoException;
 import by.itacademy.matveenko.jd2.dao.connectionpool.ConnectionPool;
 import by.itacademy.matveenko.jd2.dao.connectionpool.ConnectionPoolException;
 
 public class NewsDao implements INewsDao {
-	
+	private final UserDao userDao = new UserDao();
 	private static final Logger log = LogManager.getRootLogger();
 
 	@Override
@@ -34,21 +36,19 @@ public class NewsDao implements INewsDao {
 	        try (Connection connection = ConnectionPool.getInstance().takeConnection();
 	        	PreparedStatement ps = connection.prepareStatement(selectNewsLatestList)) {
 	            try (ResultSet rs = ps.executeQuery()) {
-	                while (rs.next()) {
-	                	Integer id = rs.getInt("id");
-	    				String title = rs.getString("title");
-	    				String brief = rs.getString("brief");
-	    				String content = rs.getString("content");
-	    				//String date = rs.getString("dateNews");
-	    				//int idReporter = rs.getInt("idReporter");
-	    				//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	    				Timestamp timestamp = rs.getTimestamp(5);
-	    				String date = new SimpleDateFormat("yyyy-mm-dd").format(timestamp);
-	    				News latestNews = new News(id, title, brief, content, date);
+	                while (rs.next()) {	                	
+	    				News latestNews = new News.Builder()
+	    						.withId(rs.getInt("id"))
+	                            .withTitle(rs.getString("title"))
+	                            .withBrief(rs.getString("brief"))
+	                            .withContent(rs.getString("content"))
+	                            .withDate(LocalDate.parse(rs.getString("date")))
+	                            //.withAuthor(userDao.findById(rs.getInt("reporter")))
+	                            .build();
 	    				newsLatestList.add(latestNews);
 	    			}	    						
 	        }	        
-	    } catch (SQLException | ConnectionPoolException e) {
+	    } catch (SQLException | ConnectionPoolException  e) {
 	    	log.error(e);
 	    	throw new NewsDaoException(e);
 	    	}
@@ -64,20 +64,27 @@ public class NewsDao implements INewsDao {
 	        	PreparedStatement ps = connection.prepareStatement(selectNewsList)) {
 	            try (ResultSet rs = ps.executeQuery()) {
 	                while (rs.next()) {
-	                	Integer id = rs.getInt("id");
-	    				String title = rs.getString("title");
-	    				String brief = rs.getString("brief");
-	    				String content = rs.getString("content");
+	                	//Integer id = rs.getInt("id");
+	    				//String title = rs.getString("title");
+	    				//String brief = rs.getString("brief");
+	    				//String content = rs.getString("content");
 	    				//String date = rs.getString("dateNews");
 	    				//int idReporter = rs.getInt("idReporter");
 	    				//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	    				Timestamp timestamp = rs.getTimestamp(5);
-	    				String date = new SimpleDateFormat("yyyy-mm-dd").format(timestamp);
-	    				News news = new News(id, title, brief, content, date);
+	    				//Timestamp timestamp = rs.getTimestamp(5);
+	    				//String date = new SimpleDateFormat("yyyy-mm-dd").format(timestamp);
+	    				News news = new News.Builder()
+	    						.withId(rs.getInt("id"))
+	                            .withTitle(rs.getString("title"))
+	                            .withBrief(rs.getString("brief"))
+	                            .withContent(rs.getString("content"))
+	                            .withDate(LocalDate.parse(rs.getString("date")))
+	                            //.withAuthor(userDao.findById(rs.getInt("reporter")))
+	                            .build();
 	    				newsList.add(news);
 	    			}	    						
 	        }	        
-	    } catch (SQLException | ConnectionPoolException e) {
+	    } catch (SQLException | ConnectionPoolException  e) {
 	    	log.error(e);
 	    	throw new NewsDaoException(e);
 	    	}
@@ -93,16 +100,23 @@ public class NewsDao implements INewsDao {
 			ps.setInt(1, idNews);
 			try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                	Integer id = rs.getInt("id");
-                	String title = rs.getString("title");
-    				String brief = rs.getString("brief");
-    				String content = rs.getString("content");
+                	//Integer id = rs.getInt("id");
+                	//String title = rs.getString("title");
+    				//String brief = rs.getString("brief");
+    				//String content = rs.getString("content");
     				//String date = rs.getString("dateNews");
     				//int idReporter = rs.getInt("idReporter");
     				//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    				Timestamp timestamp = rs.getTimestamp(5);
-    				String date = new SimpleDateFormat("yyyy-MM-dd").format(timestamp);
-    				news = new News(id, title, brief, content, date);
+    				//Timestamp timestamp = rs.getTimestamp(5);
+    				//String date = new SimpleDateFormat("yyyy-MM-dd").format(timestamp);
+    				news = new News.Builder()
+    						.withId(rs.getInt("id"))
+                            .withTitle(rs.getString("title"))
+                            .withBrief(rs.getString("brief"))
+                            .withContent(rs.getString("content"))
+                            .withDate(LocalDate.parse(rs.getString("date")))
+                            //.withAuthor(userDao.findById(rs.getInt("reporter")))
+                            .build();
     				}
                 }
 			} catch (SQLException | ConnectionPoolException e) {
